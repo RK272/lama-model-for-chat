@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Window</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .chat-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-input {
+            margin-bottom: 10px;
+        }
+        .chat-button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-button:hover {
+            background-color: #45a049;
+        }
+        #response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Chat Window</h2>
+        <form class="chat-form" id="chat-form">
+            <input type="text" name="blog_topic" id="blog_topic" class="chat-input" placeholder="Enter topic here...">
+            <button type="submit" class="chat-button">Submit</button>
+        </form>
+        <div id="response-container"></div>
+    </div>
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const blogTopic = document.getElementById('blog_topic').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ blog_topic: blogTopic })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseContainer = document.getElementById('response-container');
+                responseContainer.innerHTML = data.formatted_result;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
